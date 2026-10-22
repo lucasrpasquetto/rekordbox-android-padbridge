@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+build/
+dist/
+*.spec
+*.exe
+*.log
+padbridge_config.json
+# Arquivos de terceiros (Pioneer DJ / AlphaTheta) nunca entram no repositorio
+*.midi.csv
+!mapping/PadBridge.midi.csv
+comandos.txt
+experimentos/

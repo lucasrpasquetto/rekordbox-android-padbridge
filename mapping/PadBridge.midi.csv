@@ -1,0 +1,88 @@
+@file,1,PadBridge
+#name,function,type,input,deck1,deck2,deck3,deck4,output,deck1,deck2,deck3,deck4,option,comment
+,,,,,,,,,,,,,,
+# Pad mode,,,,,,,,,,,,,,
+HotCue,HotCueMode,Button,901B,0,1,,,,,,,,Fast,Modo de pads: HOT CUE
+BeatLoop,BeatJump+Shift,Button,906D,0,1,,,,,,,,Fast,Modo de pads: BEAT LOOP
+Sampler,SamplerMode,Button,9022,0,1,,,,,,,,Fast,Modo de pads: SAMPLER
+Keyboard,HotCue+Shift,Button,9069,0,1,,,,,,,,Fast,Modo de pads: KEYBOARD
+# HOT CUE (12 pads; SHIFT apaga),,,,,,,,,,,,,,
+PAD1_HotCue,PAD1.HotCue,Pad,9000,7,9,,,9000,12,13,,,Fast,Hot cue A
+PAD1_HotCue+Shift,PAD1.HotCue+Shift,Pad,9000,8,10,,,9000,12,13,,,Fast,Apagar hot cue A
+PAD2_HotCue,PAD2.HotCue,Pad,9001,7,9,,,9001,12,13,,,Fast,Hot cue B
+PAD2_HotCue+Shift,PAD2.HotCue+Shift,Pad,9001,8,10,,,9001,12,13,,,Fast,Apagar hot cue B
+PAD3_HotCue,PAD3.HotCue,Pad,9002,7,9,,,9002,12,13,,,Fast,Hot cue C
+PAD3_HotCue+Shift,PAD3.HotCue+Shift,Pad,9002,8,10,,,9002,12,13,,,Fast,Apagar hot cue C
+PAD4_HotCue,PAD4.HotCue,Pad,9003,7,9,,,9003,12,13,,,Fast,Hot cue D
+PAD4_HotCue+Shift,PAD4.HotCue+Shift,Pad,9003,8,10,,,9003,12,13,,,Fast,Apagar hot cue D
+PAD5_HotCue,PAD5.HotCue,Pad,9004,7,9,,,9004,12,13,,,Fast,Hot cue E
+PAD5_HotCue+Shift,PAD5.HotCue+Shift,Pad,9004,8,10,,,9004,12,13,,,Fast,Apagar hot cue E
+PAD6_HotCue,PAD6.HotCue,Pad,9005,7,9,,,9005,12,13,,,Fast,Hot cue F
+PAD6_HotCue+Shift,PAD6.HotCue+Shift,Pad,9005,8,10,,,9005,12,13,,,Fast,Apagar hot cue F
+PAD7_HotCue,PAD7.HotCue,Pad,9006,7,9,,,9006,12,13,,,Fast,Hot cue G
+PAD7_HotCue+Shift,PAD7.HotCue+Shift,Pad,9006,8,10,,,9006,12,13,,,Fast,Apagar hot cue G
+PAD8_HotCue,PAD8.HotCue,Pad,9007,7,9,,,9007,12,13,,,Fast,Hot cue H
+PAD8_HotCue+Shift,PAD8.HotCue+Shift,Pad,9007,8,10,,,9007,12,13,,,Fast,Apagar hot cue H
+PAD9_HotCue,PAD9.HotCue,Pad,9008,7,9,,,9008,12,13,,,Fast,Hot cue I
+PAD9_HotCue+Shift,PAD9.HotCue+Shift,Pad,9008,8,10,,,9008,12,13,,,Fast,Apagar hot cue I
+PAD10_HotCue,PAD10.HotCue,Pad,9009,7,9,,,9009,12,13,,,Fast,Hot cue J
+PAD10_HotCue+Shift,PAD10.HotCue+Shift,Pad,9009,8,10,,,9009,12,13,,,Fast,Apagar hot cue J
+PAD11_HotCue,PAD11.HotCue,Pad,900A,7,9,,,900A,12,13,,,Fast,Hot cue K
+PAD11_HotCue+Shift,PAD11.HotCue+Shift,Pad,900A,8,10,,,900A,12,13,,,Fast,Apagar hot cue K
+PAD12_HotCue,PAD12.HotCue,Pad,900B,7,9,,,900B,12,13,,,Fast,Hot cue L
+PAD12_HotCue+Shift,PAD12.HotCue+Shift,Pad,900B,8,10,,,900B,12,13,,,Fast,Apagar hot cue L
+# BEAT LOOP (1/4 a 32),,,,,,,,,,,,,,
+PAD5_BeatLoop,PAD1_BeatLoop,Pad,9060,7,9,,,9060,12,13,,,Fast,Beat loop 1/4
+PAD6_BeatLoop,PAD2_BeatLoop,Pad,9061,7,9,,,9061,12,13,,,Fast,Beat loop 1/2
+PAD7_BeatLoop,PAD3_BeatLoop,Pad,9062,7,9,,,9062,12,13,,,Fast,Beat loop 1
+PAD8_BeatLoop,PAD4_BeatLoop,Pad,9063,7,9,,,9063,12,13,,,Fast,Beat loop 2
+PAD9_BeatLoop,PAD5_BeatLoop,Pad,9064,7,9,,,9064,12,13,,,Fast,Beat loop 4
+PAD10_BeatLoop,PAD6_BeatLoop,Pad,9065,7,9,,,9065,12,13,,,Fast,Beat loop 8
+PAD11_BeatLoop,PAD7_BeatLoop,Pad,9066,7,9,,,9066,12,13,,,Fast,Beat loop 16
+PAD12_BeatLoop,PAD8_BeatLoop,Pad,9067,7,9,,,9067,12,13,,,Fast,Beat loop 32
+# SAMPLER (8 slots por banco; SHIFT para o slot),,,,,,,,,,,,,,
+PAD1_Sampler,PAD1.Sampler,Pad,9030,7,9,,,9030,12,13,,,Fast,Tocar o slot 1
+PAD1_Sampler+Shift,PAD1.Sampler+Shift,Pad,9030,8,10,,,9030,12,13,,,Fast,Parar o slot 1
+PAD2_Sampler,PAD2_Sampler,Pad,9031,7,9,,,9031,12,13,,,Fast,Tocar o slot 2
+PAD2_Sampler+Shift,PAD2_Sampler+Shift,Pad,9031,8,10,,,9031,12,13,,,Fast,Parar o slot 2
+PAD3_Sampler,PAD3_Sampler,Pad,9032,7,9,,,9032,12,13,,,Fast,Tocar o slot 3
+PAD3_Sampler+Shift,PAD3_Sampler+Shift,Pad,9032,8,10,,,9032,12,13,,,Fast,Parar o slot 3
+PAD4_Sampler,PAD4_Sampler,Pad,9033,7,9,,,9033,12,13,,,Fast,Tocar o slot 4
+PAD4_Sampler+Shift,PAD4_Sampler+Shift,Pad,9033,8,10,,,9033,12,13,,,Fast,Parar o slot 4
+PAD5_Sampler,PAD5_Sampler,Pad,9034,7,9,,,9034,12,13,,,Fast,Tocar o slot 5
+PAD5_Sampler+Shift,PAD5_Sampler+Shift,Pad,9034,8,10,,,9034,12,13,,,Fast,Parar o slot 5
+PAD6_Sampler,PAD6_Sampler,Pad,9035,7,9,,,9035,12,13,,,Fast,Tocar o slot 6
+PAD6_Sampler+Shift,PAD6_Sampler+Shift,Pad,9035,8,10,,,9035,12,13,,,Fast,Parar o slot 6
+PAD7_Sampler,PAD7_Sampler,Pad,9036,7,9,,,9036,12,13,,,Fast,Tocar o slot 7
+PAD7_Sampler+Shift,PAD7_Sampler+Shift,Pad,9036,8,10,,,9036,12,13,,,Fast,Parar o slot 7
+PAD8_Sampler,PAD8_Sampler,Pad,9037,7,9,,,9037,12,13,,,Fast,Tocar o slot 8
+PAD8_Sampler+Shift,PAD8_Sampler+Shift,Pad,9037,8,10,,,9037,12,13,,,Fast,Parar o slot 8
+# SAMPLER - banco anterior / proximo (botoes no canal do deck),,,,,,,,,,,,,,
+Parameter1Left_Sampler,Parameter1Left.Sampler,Button,9027,0,1,,,,,,,,Fast,Banco do sampler anterior
+Parameter1Right_Sampler,Parameter1Right.Sampler,Button,902F,0,1,,,,,,,,Fast,Banco do sampler seguinte
+# KEYBOARD (tom a partir do hot cue selecionado na controladora),,,,,,,,,,,,,,
+PAD1_Keyboard,PAD1.Keyboard,Pad,9040,7,9,,,9040,12,13,,,Fast,Keyboard +4 semitons
+PAD2_Keyboard,PAD2_Keyboard,Pad,9041,7,9,,,9041,12,13,,,Fast,Keyboard +5 semitons
+PAD3_Keyboard,PAD3_Keyboard,Pad,9042,7,9,,,9042,12,13,,,Fast,Keyboard +6 semitons
+PAD4_Keyboard,PAD4_Keyboard,Pad,9043,7,9,,,9043,12,13,,,Fast,Keyboard +7 semitons
+PAD5_Keyboard,PAD5_Keyboard,Pad,9044,7,9,,,9044,12,13,,,Fast,Keyboard 0 semitons
+PAD6_Keyboard,PAD6_Keyboard,Pad,9045,7,9,,,9045,12,13,,,Fast,Keyboard +1 semitons
+PAD7_Keyboard,PAD7_Keyboard,Pad,9046,7,9,,,9046,12,13,,,Fast,Keyboard +2 semitons
+PAD8_Keyboard,PAD8_Keyboard,Pad,9047,7,9,,,9047,12,13,,,Fast,Keyboard +3 semitons
+# STEMS (mute on/off; o Rekordbox devolve o estado nos canais 12/13),,,,,,,,,,,,,,
+ActivePartVocal,,Button,9010,7,9,,,9010,12,13,,,Fast,Stem vocal on/off
+ActivePartInst,,Button,9011,7,9,,,9011,12,13,,,Fast,Stem inst on/off
+ActivePartBass,,Button,9012,7,9,,,9012,12,13,,,Fast,Stem bass on/off
+ActivePartDrums,,Button,9013,7,9,,,9013,12,13,,,Fast,Stem drums on/off
+# KEY (botoes no canal do deck),,,,,,,,,,,,,,
+SemitoneDown,SemitoneDown,Button,900A,0,1,,,,,,,,Fast,Tom -1 semitom
+SemitoneUp,SemitoneUp,Button,9079,0,1,,,,,,,,Fast,Tom +1 semitom
+KeySync,SemitoneDown+Shift,Button,9065,0,1,,,,,,,,Fast,Sincronizar o tom
+KeyReset,SemitoneUp+Shift,Button,9064,0,1,,,,,,,,Fast,Resetar o tom
+# PERFORMANCE (nudge segura; slip e master devolvem o estado nos canais 12/13),,,,,,,,,,,,,,
+PitchBendDown,,Button,9050,0,1,,,,,,,,Fast,Pitch bend para baixo (enquanto segura)
+PitchBendUp,,Button,9051,0,1,,,,,,,,Fast,Pitch bend para cima (enquanto segura)
+Slip,,Button,9052,0,1,,,9052,12,13,,,Fast,Slip mode liga/desliga
+Master,,Button,9053,0,1,,,9053,12,13,,,Fast,Deck master
+InstDoubles,,Button,9054,0,1,,,,,,,,Fast,Instant Doubles: copia a faixa do outro deck
+CFXOn,,Button,9055,,,,,9C55,,,,,Fast,Color FX liga/desliga (global)

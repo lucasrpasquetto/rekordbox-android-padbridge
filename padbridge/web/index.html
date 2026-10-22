@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>PadBridge</title>
+<style>
+:root{--bg:#0e0f13;--panel:#181a21;--line:#2a2d38;--txt:#e8e9ee;--mut:#8a8fa3}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;height:100dvh;background:var(--bg);color:var(--txt);font-family:system-ui,sans-serif;
+  overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+#app{height:100%;height:100dvh;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
+.deck{overflow:hidden;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;
+  display:flex;flex-direction:column;gap:8px;min-height:0}
+.topo{min-height:48px;display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.12em;color:var(--mut);font-weight:700}
+.row{display:flex;gap:6px}
+.btn{flex:1;min-height:0;border:1px solid var(--line);background:#222530;color:var(--txt);border-radius:10px;padding:13px 4px;font-size:13px;font-weight:700;text-align:center}
+.btn.sel{border-color:var(--c,#ffb703);color:var(--t,#14110a);background:var(--c,#ffb703)}
+.btn.on{background:#3a4a8a}
+.stems .btn{padding:18px 4px;font-size:14px}
+.pad.sel{background:var(--c);box-shadow:inset 0 0 0 3px #fff}
+.ganho{display:none;align-items:center;gap:10px;font-size:11px;color:var(--mut);font-weight:700;letter-spacing:.08em}
+.trilho{flex:1;height:44px;background:#12141a;border:1px solid var(--line);border-radius:12px;position:relative;overflow:hidden}
+.enche{position:absolute;left:0;top:0;bottom:0;width:0;background:#06d6a0}
+.stem{border-left:4px solid var(--c);color:var(--mut)}.stem.ativo{background:var(--c);border-color:var(--c);color:var(--t,#0e0f13)}
+.bank{display:none}.bank .row{flex:1}.bank .btn{padding:16px 4px}.bank .btn.lbl{flex:1.4;color:var(--mut)}
+.pads{flex:1;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:8px;min-height:0}
+.pad{min-height:0;min-width:0;overflow:hidden;line-height:1.05;background:color-mix(in srgb,var(--c) 38%,#14151b);border-radius:14px;border:2px solid rgba(255,255,255,.14);
+  font-weight:800;font-size:clamp(11px,3.2vh,22px);padding:clamp(4px,1.2vh,10px);color:#fff;display:flex;align-items:flex-end}
+.pad.aceso,.pad.on,.pad.sel{color:#0e0f13}   /* apagado/repouso: letra branca; aceso: letra preta */
+.pad.on{background:var(--c);filter:brightness(1.3);box-shadow:0 0 26px var(--c)}
+.pad.apagado{opacity:.2}
+.pad.aceso{background:var(--c)}
+.pad{position:relative}
+.pad[data-v]:not([data-v=""])::after{content:attr(data-v);position:absolute;right:6px;top:4px;font-size:12px;background:#000a;padding:1px 5px;border-radius:6px}
+.deck.shift .pad{border-color:#e63946;box-shadow:inset 0 0 0 2px #e63946}
+.shiftbtn{border:1px solid var(--line);background:#222530;color:var(--txt);border-radius:12px;padding:16px 4px;
+  font-size:14px;font-weight:700;text-align:center}
+.deck.shift .shiftbtn{background:#8a1c2b;border-color:#e63946}
+.shiftbtn.dim{opacity:.35}
+.btn.tog{border-style:dashed;opacity:.85;flex:.8}
+#rod{position:fixed;left:0;right:0;bottom:2px;text-align:center;font-size:11px;color:var(--mut);font-family:monospace;pointer-events:none}
+#rod i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e63946;margin-right:6px}
+#rod.ok i{background:#06d6a0}
+#ult{display:none}body.dbg #ult{display:inline}
+#gire{display:none;position:fixed;inset:0;background:var(--bg);align-items:center;justify-content:center;font-size:18px;color:var(--mut)}
+@media (orientation:portrait){#app{display:none}#gire{display:flex}}
+@media (max-height:760px){.btn{padding:9px 4px;font-size:12px}.stems .btn{padding:11px 4px}.shiftbtn{padding:10px 4px;font-size:12px}.deck{gap:5px;padding:7px}.trilho{height:34px}.bank .btn{padding:10px 4px}}
+@media (max-height:640px){.btn{padding:6px 4px}.stems .btn{padding:7px 4px}.shiftbtn{padding:6px 4px}.trilho{height:28px}}
+.topo .acoes{display:flex;gap:6px}
+.topo .lado{display:flex;align-items:center;gap:12px}
+.mini{min-height:44px;display:flex;align-items:center;justify-content:center}
+.master{font-weight:700;letter-spacing:.12em}
+.master.sel{color:#06d6a0}   /* so um rotulo: apenas muda a cor do texto quando o deck e o master */
+.mini{border:1px solid var(--line);background:#222530;color:var(--txt);border-radius:8px;padding:5px 14px;font-size:12px;font-weight:700;letter-spacing:.06em}
+#app.z0,#app.z1{grid-template-columns:1fr}
+#app.z0 #d1,#app.z1 #d0{display:none}
+#app.z0 .stems .btn,#app.z1 .stems .btn{min-height:max(64px,10vh);font-size:16px;display:flex;align-items:center;justify-content:center}
+#app.z0 .shiftbtn,#app.z1 .shiftbtn{min-height:max(64px,10vh);font-size:16px;display:flex;align-items:center;justify-content:center}
+#app.z0 .modos .btn,#app.z1 .modos .btn{padding-top:14px;padding-bottom:14px;font-size:14px}
+.ctl .shiftbtn{flex:1.3;display:flex;align-items:center;justify-content:center;text-align:center;padding:15px 4px;font-size:14px}
+.ctl .btn{padding:15px 4px;font-size:14px}
+@media (max-height:760px){.ctl .btn,.ctl .shiftbtn,.loop .btn{padding:9px 2px}.sfxn{padding:11px 2px}.sfxs,.sfxh{padding:8px 2px}}
+@media (max-height:640px){.ctl .btn,.ctl .shiftbtn,.loop .btn{padding:6px 2px}.sfxn{padding:7px 2px}.sfxs,.sfxh{padding:6px 2px}}
+#app.z0 .ctl .btn,#app.z1 .ctl .btn,#app.z0 .loop .btn,#app.z1 .loop .btn,#app.z0 .ctl .shiftbtn,#app.z1 .ctl .shiftbtn{min-height:max(56px,9vh);font-size:16px;display:flex;align-items:center;justify-content:center}
+
+.modos .btn{border-top:3px solid var(--c,#6b7fd6)}
+.modos .btn.sel{background:var(--c);border-color:var(--c);color:var(--t,#0e0f13)}
+.loop .btn,.ctl .btn{padding:13px 2px;font-size:13px}
+.sfx{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px 6px;display:flex;flex-direction:column;gap:6px;min-height:0;overflow:hidden}
+.sfxt{font-size:10px;letter-spacing:.1em;color:var(--mut);font-weight:700;text-align:center}
+.sfxb{display:flex;flex-direction:column;gap:6px}
+.sfxn{padding:16px 2px;font-size:15px;background:#1f3a5c;border-color:#2f5d94}
+.sfx.sel .sfxn{background:#5c3a1f;border-color:#94602f}
+.sfxf{flex:1;min-height:60px;position:relative;background:#12141a;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sfxe{position:absolute;left:0;right:0;bottom:0;height:0;background:#4361ee}
+.sfx .btn{flex:none}
+.sfxs,.sfxh{padding:12px 2px;font-size:12px}
+.stems,.modos,.ctl{--h:max(54px,8.2vh)}
+.stems .btn,.modos .btn,.ctl .btn,.ctl .shiftbtn{min-height:var(--h);display:flex;align-items:center;justify-content:center;padding-top:0;padding-bottom:0}
+.stems,.modos,.ctl{flex:none}
+</style>
+</head>
+<body>
+<div id="app"><div class="deck" id="d0"></div><div class="deck" id="d1"></div></div>
+<div id="gire">Gire o tablet para a horizontal</div>
+<div id="rod"><i></i><span id="st">sem conexao</span> &nbsp; <span id="ult"></span></div>
+<script>
+// Deck 1 = canal 7, deck 2 = canal 9 (pads). SHIFT = mesmo pad no canal +1 (so no HOT CUE: apagar). SHIFT nunca envia MIDI.
+// Botoes de modo: nota no canal do deck (0 e 1). Aperto = note on vel 127; solta = note on vel 0.
+const MODOS=[{"id": "hotcue", "nome": "HOT CUE", "nota_modo": 27, "pads": [{"rot": "A", "nota": 0}, {"rot": "B", "nota": 1}, {"rot": "C", "nota": 2}, {"rot": "D", "nota": 3}, {"rot": "E", "nota": 4}, {"rot": "F", "nota": 5}, {"rot": "G", "nota": 6}, {"rot": "H", "nota": 7}, {"rot": "I", "nota": 8}, {"rot": "J", "nota": 9}, {"rot": "K", "nota": 10}, {"rot": "L", "nota": 11}], "shift": true, "colunas": 4, "linhas": 3}, {"id": "beatloop", "nome": "BEAT LOOP", "nota_modo": 109, "pads": [{"rot": "1/4", "nota": 96}, {"rot": "1/2", "nota": 97}, {"rot": "1", "nota": 98}, {"rot": "2", "nota": 99}, {"rot": "4", "nota": 100}, {"rot": "8", "nota": 101}, {"rot": "16", "nota": 102}, {"rot": "32", "nota": 103}], "shift": false, "colunas": 4, "linhas": 2}, {"id": "sampler", "nome": "SAMPLER", "nota_modo": 34, "pads": [{"rot": "SLOT 1", "nota": 48}, {"rot": "SLOT 2", "nota": 49}, {"rot": "SLOT 3", "nota": 50}, {"rot": "SLOT 4", "nota": 51}, {"rot": "SLOT 5", "nota": 52}, {"rot": "SLOT 6", "nota": 53}, {"rot": "SLOT 7", "nota": 54}, {"rot": "SLOT 8", "nota": 55}], "shift": true, "colunas": 4, "linhas": 2, "shift_txt": "SHIFT (parar slot)", "barra": {"menos": "BANCO -", "mais": "BANCO +", "rot": "BANCO", "contador": 4, "canal": "deck", "nota_menos": 39, "nota_mais": 47}}, {"id": "keyboard", "nome": "KEYBOARD", "nota_modo": 105, "pads": [{"rot": "+4", "nota": 64}, {"rot": "+5", "nota": 65}, {"rot": "+6", "nota": 66}, {"rot": "+7", "nota": 67}, {"rot": "0", "nota": 68}, {"rot": "+1", "nota": 69}, {"rot": "+2", "nota": 70}, {"rot": "+3", "nota": 71}], "shift": false, "colunas": 4, "linhas": 2}];
+const PERF=[{"rot": "NUDGE -", "nota": 80, "estado": false, "topo": false, "aria": null}, {"rot": "NUDGE +", "nota": 81, "estado": false, "topo": false, "aria": null}, {"rot": "SLIP", "nota": 82, "estado": true, "topo": false, "aria": null}, {"rot": "MASTER", "nota": 83, "estado": true, "topo": true, "aria": null}, {"rot": "DOUBLES", "nota": 84, "estado": false, "topo": true, "aria": "Instant Doubles"}, {"rot": "CFX ON", "nota": 85, "estado": true, "topo": false, "aria": "Color FX ligado/desligado", "global": true}];     // 2a pagina da fila de baixo: NUDGE -/+, SLIP, MASTER (os dois ultimos mostram o estado do Rekordbox)
+const ctrlFb=[{},{}];
+const ctrlGlobalFb={};   // nota -> botoes dos 2 decks: funcoes globais (CFX ON) devolvem o estado uma vez so, no canal 12    // por deck: nota -> botao que segue o estado do Rekordbox
+const CTRL=[{"rot": "KEY -", "nota": 10}, {"rot": "KEY +", "nota": 121}, {"rot": "KEY SYNC", "nota": 101}, {"rot": "KEY RESET", "nota": 100}];     // QUANTIZE (alterna) e KEY -/+ (momentaneos), canal do deck
+const STEMS={"partes": [{"rot": "VOCAL", "nota": 16}, {"rot": "INST", "nota": 17}, {"rot": "BASS", "nota": 18}, {"rot": "DRUMS", "nota": 19}], "fb": {"stems": [12, 13]}};   // stems: um codigo por parte (o Rekordbox alterna);
+const CORES_STEM=['#ef476f','#ffd166','#4361ee','#06d6a0'];
+let FB=false;            // estado dos STEMS vem do Rekordbox
+let _fbx=false;            // vira true na 1a mensagem de estado vinda do Rekordbox: dai em diante a tela segue o Rekordbox
+const stemBtns=[[],[]];  // por deck: botoes VOCAL/INST/BASS/DRUMS
+const padHooks=[null,null];   // por deck: recebe (nota,vel) dos pads vindos do Rekordbox
+const DBG=/[?&]dbg=1/.test(location.search);   // ?dbg=1 mostra a velocidade recebida em cada pad e a ultima mensagem MIDI
+if(DBG)document.body.classList.add('dbg');
+// cor do texto: escuro ou branco, o que der mais contraste (minimo entre todos os fundos em que o botao aparece)
+const _lum=h=>{const c=[1,3,5].map(i=>parseInt(h.substr(i,2),16)/255).map(v=>v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4));return .2126*c[0]+.7152*c[1]+.0722*c[2]};
+const _mix=(h,base,a)=>'#'+[1,3,5].map(i=>Math.round(a*parseInt(h.substr(i,2),16)+(1-a)*parseInt(base.substr(i,2),16)).toString(16).padStart(2,'0')).join('');
+const _cr=(a,b)=>(Math.max(a,b)+.05)/(Math.min(a,b)+.05);
+function textoPara(fundos){let best='#ffffff',bm=0;for(const t of ['#0e0f13','#ffffff']){const m=Math.min(...fundos.map(f=>_cr(_lum(f),_lum(t))));if(m>bm){bm=m;best=t}}return best}
+// a tela nao deixa o tablet apagar durante o set
+let _wl=null;
+async function pedeWL(){try{if(navigator.wakeLock&&document.visibilityState==='visible'&&!_wl){_wl=await navigator.wakeLock.request('screen');_wl.addEventListener('release',()=>{_wl=null})}}catch(e){_wl=null}}
+document.addEventListener('pointerdown',pedeWL);document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')pedeWL()});pedeWL();
+function feedback(ch,nota,vel){
+  const F=STEMS.fb,on=vel>0;
+  if(ch===F.stems[0]&&ctrlGlobalFb[nota]){ctrlGlobalFb[nota].forEach(b=>b.classList.toggle('sel',on));return}
+  ult.textContent='RB: 9'+ch.toString(16).toUpperCase()+' '+nota.toString(16).toUpperCase().padStart(2,'0')+' '+vel.toString(16).toUpperCase().padStart(2,'0');
+  const d=F.stems.indexOf(ch);
+  if(d>=0){const k=STEMS.partes.findIndex(p=>p.nota===nota);
+    if(k>=0){if(stemBtns[d][k]){FB=true;stemBtns[d][k]._on=on;stemBtns[d][k].classList.toggle('ativo',on)}return}
+    if(ctrlFb[d][nota]){ctrlFb[d][nota].classList.toggle('sel',on);return}
+    if(padHooks[d])padHooks[d](nota,vel);return}
+}          // so a tela; compartilhado entre os 2 decks (a funcao do Rekordbox e global)
+const PCH=[7,9];
+const COR_MODO={hotcue:'#ef476f',beatloop:'#ff9f1c',sampler:'#f15bb5',keyboard:'#06d6a0'};
+const CORES={hotcue:['#ef476f','#f78c6b','#ffd166','#06d6a0','#26c6da','#4361ee','#9b5de5','#f15bb5','#8ac926','#ff9f1c','#2ec4b6','#c77dff','#ff6b6b','#4cc9f0','#b5e48c','#ffb703'],
+             keyshift:['#ffd166','#ffd166','#ffd166','#ffd166','#ffb347','#e9c46a','#e9c46a','#e9c46a'],
+             keyboard:['#06d6a0','#06d6a0','#06d6a0','#06d6a0','#26c6da','#8ac926','#8ac926','#8ac926'],
+             sampler:['#f15bb5','#f15bb5','#f15bb5','#f15bb5','#c77dff','#c77dff','#c77dff','#c77dff'],
+             beatloop:['#ffd166','#ffb347','#ff9f1c','#f78c6b','#ef7b45','#e85d04','#dc2f02','#d00000']};
+
+let ws=null;
+const stEl=document.getElementById('st'),rod=document.getElementById('rod'),ult=document.getElementById('ult');
+function conectar(){
+  ws=new WebSocket((location.protocol==='https:'?'wss://':'ws://')+location.host+'/ws');
+  ws.onopen=()=>{rod.className='ok';stEl.textContent='conectado'};
+  ws.onmessage=ev=>{const p=String(ev.data).split(',');if(p[0]==='st')feedback(+p[1],+p[2],+p[3])};
+  ws.onclose=()=>{rod.className='';stEl.textContent='sem conexao';setTimeout(conectar,1000)};
+  ws.onerror=()=>{try{ws.close()}catch(e){}};
+}
+function enviar(t,ch,nota,vel){                    // t: 'on' | 'rel' | 'cc' (nota = numero do CC, vel = valor)
+  if(ws&&ws.readyState===1)ws.send(t+','+ch+','+nota+','+vel);
+  ult.textContent='ultimo: '+[(t==='cc'?0xB0:0x90)|ch,nota,vel].map(x=>x.toString(16).padStart(2,'0')).join(' ').toUpperCase();
+}
+// segura: aperto manda 'on', solta manda 'rel' (com a nota/canal decididos no aperto)
+function segurar(el,decidir,extra){
+  let seg=false,ch=0,nota=0;
+  el.addEventListener('pointerdown',ev=>{
+    ev.preventDefault();
+    try{el.setPointerCapture(ev.pointerId)}catch(_){}
+    if(seg)return;
+    const x=decidir(); if(!x)return;
+    seg=true; ch=x[0]; nota=x[1]; el.classList.add('on');
+    enviar('on',ch,nota,127);
+    if(navigator.vibrate)navigator.vibrate(8);
+    if(extra)extra();
+  });
+  const soltar=()=>{if(!seg)return; seg=false; el.classList.remove('on'); enviar('rel',ch,nota,0)};
+  ['pointerup','pointercancel','lostpointercapture'].forEach(n=>el.addEventListener(n,soltar));
+}
+
+function montar(el,d){
+  el.innerHTML='<div class="topo"><span class="lado"><span>DECK '+(d+1)+'</span><span class="master" role="status" aria-label="Deck master">MASTER</span></span><span class="acoes"><span class="mini dbl" aria-label="Instant Doubles">DOUBLES</span><span class="mini zoom">AMPLIAR</span><span class="mini full">TELA CHEIA</span></span></div><div class="row stems"></div><div class="row modos"></div><div class="pads"></div><div class="row bank"></div><div class="ganho"><span>GANHO DRUM SWAP</span><div class="trilho"><div class="enche"></div></div></div><div class="row ctl"><div class="shiftbtn">SHIFT</div></div>';
+  const modosEl=el.querySelector('.modos'),pads=el.querySelector('.pads'),sh=el.querySelector('.shiftbtn'),bankEl=el.querySelector('.bank'),ganhoEl=el.querySelector('.ganho');
+  let modo=0,shift=false;
+  const padEls=[];
+  for(let i=0;i<Math.max(...MODOS.map(m=>m.pads.length));i++){const e=document.createElement('div');e.className='pad';pads.appendChild(e);padEls.push(e)}
+  const render=()=>{
+    const m=MODOS[modo];
+    pads.style.gridTemplateRows='repeat('+m.linhas+',1fr)';
+    padEls.forEach((e,i)=>{
+      const p=m.pads[i];
+      e.style.display=p?'flex':'none';
+      if(p){const cor=p.cor||CORES[m.id][i%CORES[m.id].length];e.textContent=p.rot;e.style.setProperty('--c',cor);e.style.setProperty('--t',textoPara([cor,_mix(cor,'#14151b',.62)]));e.setAttribute('aria-label','Deck '+(d+1)+' '+m.nome+' '+p.rot)}
+    });
+    sh.textContent=m.shift?(m.shift_txt||'SHIFT (apagar)'):'SHIFT (sem funcao neste modo)';
+    bankEl.style.display=m.barra?'flex':'none';
+    ganhoEl.style.display=m.ganho!=null?'flex':'none';
+    barras.forEach((x,j)=>{if(x)x.style.display=(j===modo)?'flex':'none'});
+    sh.classList.toggle('dim',!m.shift);
+    if(!m.shift)setShift(false);
+    [...modosEl.children].forEach((b,j)=>b.classList.toggle('sel',j===modo));
+    aplicaLuz();
+  };
+  // estado dos pads vindo do Rekordbox: so apaga o que sobra depois que o Rekordbox informou algo deste modo
+  const luz={};
+  const aplicaLuz=()=>{
+    const m=MODOS[modo],informado=m.pads.some(p=>p.nota in luz);
+    padEls.forEach((e,i)=>{const p=m.pads[i];if(!p)return;const v=luz[p.nota];
+      e.classList.toggle('aceso',informado&&v>0);e.classList.toggle('apagado',informado&&!(v>0));
+      if(DBG&&v!=null)e.dataset.v=v;else delete e.dataset.v});
+  };
+  padHooks[d]=(nota,vel)=>{luz[nota]=vel;aplicaLuz()};
+  const setShift=v=>{shift=v;el.classList.toggle('shift',v)};
+  MODOS.forEach((m,j)=>{
+    const b=document.createElement('div');b.className='btn';b.textContent=m.nome;b.style.setProperty('--c',COR_MODO[m.id]||'#6b7fd6');b.style.setProperty('--t',textoPara([COR_MODO[m.id]||'#6b7fd6']));modosEl.appendChild(b);
+    if(m.nota_modo==null){b.addEventListener('pointerdown',ev=>{ev.preventDefault();modo=j;render()})}   // so a tela (ex.: GROOVE)
+    else segurar(b,()=>[d,m.nota_modo],()=>{modo=j;render()});
+  });
+  // barras extras por modo: banco do sampler (so a tela conta: assume banco 1 ao abrir; tocar no rotulo volta a tela para 1)
+  // e seletor de hot cue do keyboard (sem contador: o Rekordbox nao informa qual hot cue esta selecionado)
+  const barras=[];
+  MODOS.forEach((m,j)=>{
+    if(!m.barra)return;
+    const br=m.barra,bar=document.createElement('div');bar.className='row barra';bar.style.display='none';bankEl.appendChild(bar);
+    const lbl=document.createElement('div');lbl.className='btn lbl';
+    let n=1;const att=()=>{lbl.textContent=br.contador?br.rot+' '+n+' / '+br.contador:br.rot};
+    const canal=()=>br.canal==='shift'?PCH[d]+1:d;
+    const mk=(txt,nota,delta)=>{const b=document.createElement('div');b.className='btn';b.textContent=txt;
+      segurar(b,()=>[canal(),nota],()=>{if(br.contador){n=Math.min(br.contador,Math.max(1,n+delta));att()}});return b};
+    bar.append(mk(br.menos,br.nota_menos,-1),lbl,mk(br.mais,br.nota_mais,1));
+    if(br.contador)lbl.addEventListener('pointerdown',ev=>{ev.preventDefault();n=1;att()});
+    att();barras[j]=bar;
+  });
+  padEls.forEach((e,i)=>segurar(e,()=>{
+    const p=MODOS[modo].pads[i]; if(!p)return null;
+    return [MODOS[modo].canal_deck?d:PCH[d]+((shift&&MODOS[modo].shift)?1:0),p.nota];
+  },()=>{
+    const p=MODOS[modo].pads[i]; if(!p||!p.grupo)return;       // BANK A/B e SINGLE/MULTI: so a tela marca o ultimo tocado
+    MODOS[modo].pads.forEach((q,k)=>{if(q.grupo===p.grupo)padEls[k].classList.toggle('sel',k===i)});
+  }));
+  sh.addEventListener('pointerdown',ev=>{ev.preventDefault();try{sh.setPointerCapture(ev.pointerId)}catch(_){};if(MODOS[modo].shift)setShift(true)});
+  ['pointerup','pointercancel','lostpointercapture'].forEach(n=>sh.addEventListener(n,()=>setShift(false)));
+  // ganho do Drum Swap: fader horizontal de 14 bits (MSB = CC, LSB = CC+32), canal do deck
+  const trilho=ganhoEl.querySelector('.trilho'),enche=ganhoEl.querySelector('.enche');let ultimoG=-1;
+  const setG=ev=>{
+    const m=MODOS.find(x=>x.ganho!=null),r=trilho.getBoundingClientRect();
+    let v=(ev.clientX-r.left)/r.width;v=Math.max(0,Math.min(1,v));
+    const n=Math.round(v*16383);enche.style.width=(v*100)+'%';
+    if(n!==ultimoG){ultimoG=n;enviar('cc',d,m.ganho,n>>7);enviar('cc',d,m.ganho+32,n&127)}
+  };
+  trilho.addEventListener('pointerdown',ev=>{ev.preventDefault();try{trilho.setPointerCapture(ev.pointerId)}catch(_){}setG(ev)});
+  trilho.addEventListener('pointermove',ev=>{let c=false;try{c=trilho.hasPointerCapture(ev.pointerId)}catch(_){}if(c)setG(ev)});
+  const ctlEl=el.querySelector('.ctl');
+  const paginas=[[],[]];   // 0 = KEY, 1 = PERFORMANCE
+  const mostra=pg=>{paginas.forEach((l,i)=>l.forEach(b=>b.style.display=(i===pg)?'':'none'));tog.textContent=pg?'KEY':'PERF';tog.dataset.pg=pg};
+  const novoBtn=(c,pg)=>{
+    const b=document.createElement('div');b.className='btn';b.textContent=c.rot;ctlEl.appendChild(b);paginas[pg].push(b);
+    segurar(b,()=>[c.global?0:d,c.nota],c.alterna?()=>b.classList.toggle('sel'):null);   // global: sempre canal 0
+    if(c.aria)b.setAttribute('aria-label',c.aria);
+    if(c.global){(ctrlGlobalFb[c.nota]=ctrlGlobalFb[c.nota]||[]).push(b)}
+    else if(c.estado)ctrlFb[d][c.nota]=b;
+  };
+  const tog=document.createElement('div');tog.className='btn tog';
+  CTRL.forEach(c=>novoBtn(c,0));
+  PERF.filter(c=>!c.topo).forEach(c=>novoBtn(c,1));
+  const dbl=PERF.find(c=>c.nota===0x54);segurar(el.querySelector('.dbl'),()=>[d,dbl.nota]);
+  const mst=PERF.find(c=>c.nota===0x53), mstEl=el.querySelector('.master');   // MASTER no cabecalho: sempre visivel, acende quando o deck e master no Rekordbox
+  ctrlFb[d][mst.nota]=mstEl;
+  ctlEl.appendChild(tog);
+  tog.addEventListener('pointerdown',ev=>{ev.preventDefault();mostra(tog.dataset.pg==='1'?0:1)});
+  mostra(0);
+  // painel de STEMS (fica sempre visivel): toque alterna ligado/desligado so na tela; o estado real e o do Rekordbox
+  const stemsEl=el.querySelector('.stems');
+  STEMS.partes.forEach((p,k)=>{
+    const b=document.createElement('div');b.className='btn stem';b.textContent=p.rot;b.style.setProperty('--c',CORES_STEM[k]);b.style.setProperty('--t',textoPara([CORES_STEM[k]]));stemsEl.appendChild(b);
+    b._on=true;b.classList.add('ativo');
+    stemBtns[d][k]=b;
+    segurar(b,()=>[PCH[d],p.nota],()=>{if(FB)return;b._on=!b._on;b.classList.toggle('ativo',b._on)});
+  });
+  render();
+}
+montar(document.getElementById('d0'),0);
+montar(document.getElementById('d1'),1);
+conectar();
+// acessibilidade: os controles sao div; role=button da o nome pelo texto e aria-pressed acompanha o estado visual
+const _ariaEl=e=>{e.setAttribute('role','button');const t=e.matches('.stem,.btn.tog,.modos .btn,.ctl .btn,.pad');if(t)e.setAttribute('aria-pressed',e.classList.contains('ativo')||e.classList.contains('sel')||e.classList.contains('aceso'))};
+const _ariaTodos=()=>document.querySelectorAll('.btn,.pad,.shiftbtn,.mini').forEach(_ariaEl);
+_ariaTodos();
+new MutationObserver(ms=>ms.forEach(m=>{if(m.target.matches('.btn,.pad,.shiftbtn,.mini'))_ariaEl(m.target)})).observe(document.body,{subtree:true,attributes:true,attributeFilter:['class']});
+
+(function(){
+  const app=document.getElementById('app');
+  const fsOk=!!(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen);
+  function atualiza(){
+    const z=app.className.match(/z(\d)/),f=!!(document.fullscreenElement||document.webkitFullscreenElement);
+    document.querySelectorAll('.zoom').forEach((e,i)=>{e.textContent=(z&&+z[1]===i)?'VOLTAR':'AMPLIAR'});
+    document.querySelectorAll('.full').forEach(e=>{e.textContent=f?'SAIR TELA CHEIA':'TELA CHEIA';e.style.display=fsOk?'':'none'});
+  }
+  document.querySelectorAll('.zoom').forEach((e,i)=>e.addEventListener('pointerdown',ev=>{
+    ev.preventDefault();app.className=(app.className==='z'+i)?'':'z'+i;atualiza()}));
+  document.querySelectorAll('.full').forEach(e=>e.addEventListener('pointerdown',ev=>{
+    ev.preventDefault();
+    try{
+      if(document.fullscreenElement||document.webkitFullscreenElement)(document.exitFullscreen||document.webkitExitFullscreen).call(document);
+      else (document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen).call(document.documentElement);
+    }catch(x){}
+  }));
+  document.addEventListener('fullscreenchange',atualiza);document.addEventListener('webkitfullscreenchange',atualiza);
+  atualiza();
+})();
+</script>
+</body>
+</html>
