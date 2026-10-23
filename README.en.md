@@ -19,7 +19,7 @@ Tablet (browser)  --USB/Wi-Fi-->  PadBridge (PC)  -->  loopMIDI "PadBridge"  -->
 
 ## Features
 - 2 decks side by side, with **zoom** (one big deck) and **fullscreen**
-- **Stems** (Vocal / Inst / Bass / Drums) in mute mode, state follows Rekordbox
+- **Stems** (Vocal / Inst / Bass / Drums), state follows Rekordbox, plus a **MODE** button that switches between mute and solo
 - 4 pad modes: **Hot Cue** (12 pads, A-L), **Beat Loop** (8), **Sampler** (8 slots, 4 banks), **Keyboard** (8)
 - **SHIFT**, **KEY -**, **KEY +**, **KEY SYNC**, **KEY RESET**
 - Tray icon, automatic `adb reverse` (USB), start with Windows
@@ -38,8 +38,8 @@ Tablet (browser)  --USB/Wi-Fi-->  PadBridge (PC)  -->  loopMIDI "PadBridge"  -->
 
 ### 1. Get PadBridge
 ```powershell
-git clone https://github.com/lucasrpasquetto/rekordbox-android-padbridge.git
-cd rekordbox-android-padbridge
+git clone https://github.com/YOUR-USER/PadBridge.git
+cd PadBridge
 ```
 Then pick **one** way to run it:
 - **A) Executable (recommended day to day):** build it with `scripts\construir_exe.bat`. The result is `dist\PadBridge.exe`, a single file that needs no Python. To use it on another computer, copy just that file.
@@ -126,7 +126,7 @@ Protocol details (Portuguese): [docs/PROTOCOLO.md](docs/PROTOCOLO.md). The UI an
 
 ## Limitations
 - Groove Circuit and Slide FX are not included (plan/extension required, or no MIDI response).
-- Stems work in MUTE mode only, which is Rekordbox's default.
+- The **MODE** button (mute/solo) is a global Rekordbox function: both decks always show the same state. It requires re-importing the mapping.
 - Windows only.
 
 ## License

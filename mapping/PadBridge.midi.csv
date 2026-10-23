@@ -74,6 +74,7 @@ ActivePartVocal,,Button,9010,7,9,,,9010,12,13,,,Fast,Stem vocal on/off
 ActivePartInst,,Button,9011,7,9,,,9011,12,13,,,Fast,Stem inst on/off
 ActivePartBass,,Button,9012,7,9,,,9012,12,13,,,Fast,Stem bass on/off
 ActivePartDrums,,Button,9013,7,9,,,9013,12,13,,,Fast,Stem drums on/off
+ActivePartMuteSolo,,Button,9056,,,,,9C56,,,,,Fast,Stems: alterna mute/solo (global)
 # KEY (botoes no canal do deck),,,,,,,,,,,,,,
 SemitoneDown,SemitoneDown,Button,900A,0,1,,,,,,,,Fast,Tom -1 semitom
 SemitoneUp,SemitoneUp,Button,9079,0,1,,,,,,,,Fast,Tom +1 semitom

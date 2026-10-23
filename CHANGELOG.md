@@ -1,6 +1,9 @@
 # Changelog
 
 ## Nao lancado
+- Botao **MODO** (mute/solo dos stems) na linha de stems de cada deck: funcao global `ActivePartMuteSolo` (nota 0x56, canal 0, retorno em 12); os dois decks mostram o mesmo estado. Requer reimportar o mapeamento.
+- A tela aceita, quando embutida em outra pagina, o tempo dos hot cues dentro dos pads (`window.__padsCues`); no PadBridge puro nada muda.
+- Estudo de dados em tempo real (`docs/TEMPO_REAL.md`) e sonda `tools/sonda_prolink.py` para testar o PRO DJ LINK (somente leitura).
 - MASTER virou so um rotulo no cabecalho (nao e mais botao): o texto fica verde quando o deck e o master; DOUBLES usa o mesmo estilo de AMPLIAR e TELA CHEIA.
 - Letra dos pads: branca quando apagados ou em repouso, preta quando acesos (cor do pad mais escura no repouso para manter o contraste).
 - DOUBLES (Instant Doubles: carrega no deck a faixa do outro deck) fica no cabecalho de cada deck, ao lado do MASTER; a pagina PERF ganha CFX ON (liga/desliga o Color FX, global; acende nos dois decks se o Rekordbox devolver o estado). Requer reimportar o mapeamento.

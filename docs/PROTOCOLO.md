@@ -23,6 +23,7 @@ O SHIFT do tablet nao envia MIDI: apenas muda o canal do proximo pad.
 - Sampler: 0x30-0x37 (bancos: 0x27 e 0x2F)
 - Keyboard: 0x40-0x47
 - Stems (Vocal/Inst/Bass/Drums): 0x10-0x13
+- MODO dos stems (mute/solo) 0x56 (`ActivePartMuteSolo`, global: entrada sempre no canal 0, retorno de estado em 12 com a nota 0x56, saida `9C56`)
 - Performance (canal do deck 0/1): NUDGE - 0x50 (`PitchBendDown`), NUDGE + 0x51 (`PitchBendUp`), SLIP 0x52 (`Slip`), MASTER 0x53 (`Master`, botao fixo no cabecalho do deck); SLIP e MASTER devolvem o estado em 12/13 com a mesma nota
 - Instant Doubles 0x54 (`InstDoubles`, por deck, sem retorno, botao no cabecalho) e CFX ON 0x55 (`CFXOn`, global: entrada sempre no canal 0, retorno de estado em 12 com a nota 0x55, saida `9C55`; o retorno ainda nao foi confirmado no Rekordbox)
 

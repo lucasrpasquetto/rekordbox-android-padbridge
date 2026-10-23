@@ -109,7 +109,9 @@ def gerar():
         entrada = "90%02X" % (0x10 + i)
         rows.append(linha(nome, "", "Button", entrada, PAD, f"Stem {rot.lower()} on/off", saida=(entrada, FB_STEMS[0], FB_STEMS[1])))
         partes.append(dict(rot=rot, nota=0x10 + i))
-    stems = dict(partes=partes, fb=dict(stems=[int(c) for c in FB_STEMS]))
+    # modo dos stems (mute/solo): funcao global do Rekordbox, sem coluna de deck; canal 0 dentro do codigo, estado volta em 12 (nota 0x56)
+    rows.append(linha("ActivePartMuteSolo", "", "Button", "9056", ("", ""), "Stems: alterna mute/solo (global)", saida=("9C56", "", "")))
+    stems = dict(modo=dict(rot="MODO", nota=0x56), partes=partes, fb=dict(stems=[int(c) for c in FB_STEMS]))
 
     # ---- KEY: semitom -/+, sincronizar e resetar o tom (botoes no canal do deck) ---------------------------
     rows.append(secao("KEY (botoes no canal do deck)"))
