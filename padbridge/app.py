@@ -350,15 +350,19 @@ def thread_servidor(cfg):
 
 
 # ----------------------------------------------------------------------------- adb reverse automatico
+PORTAS_EXTRA = []   # outras portas que tambem precisam do 'adb reverse' (o v2 acrescenta a dele)
+
+
 def thread_adb(cfg):
     if not cfg["usar_adb"]:
         estado.adb = "desligado na configuracao"
         return
-    porta = f"tcp:{int(cfg['http'])}"
-    ja = set()
+    ja = set()           # (aparelho, porta) com reverse feito
     servidor_adb = None  # caminho do adb para o qual ja rodamos 'start-server'
+    ultimo_txt, falhas = None, 0
     while not estado.parar.is_set():
         try:
+            portas = [f"tcp:{int(cfg['http'])}"] + [f"tcp:{int(p)}" for p in PORTAS_EXTRA]
             adb = procurar_adb(cfg["adb"])
             if not adb:
                 estado.adb = 'adb.exe nao encontrado (indique o caminho em padbridge_config.json, campo "adb")'
@@ -369,21 +373,36 @@ def thread_adb(cfg):
                                    creationflags=CREATE_NO_WINDOW if os.name == "nt" else 0)
                     servidor_adb = adb
                 _, saida = rodar_adb(adb, "devices", tempo=15)
+                falhas = 0
+                resumo = " | ".join(l.strip() for l in saida.splitlines()[1:] if l.strip())
+                if resumo != ultimo_txt:                   # so registra quando algo muda
+                    logging.info("adb devices: %s", resumo or "(nenhum)")
+                    ultimo_txt = resumo
                 aparelhos = interpretar_adb_devices(saida)
-                ja &= set(aparelhos)
-                for s in aparelhos:
-                    _, lista = rodar_adb(adb, "-s", s, "reverse", "--list")
-                    if porta not in lista or s not in ja:
-                        cod, txt = rodar_adb(adb, "-s", s, "reverse", porta, porta)
+                ja = {(s_, p_) for (s_, p_) in ja if s_ in aparelhos}
+                for s_ in aparelhos:
+                    _, lista = rodar_adb(adb, "-s", s_, "reverse", "--list")
+                    for porta in portas:
+                        if porta in lista and (s_, porta) in ja:
+                            continue
+                        cod, txt = rodar_adb(adb, "-s", s_, "reverse", porta, porta)
                         if cod == 0:
-                            logging.info("adb reverse ok: %s", s)
-                            ja.add(s)
+                            logging.info("adb reverse ok: %s %s", s_, porta)
+                            ja.add((s_, porta))
                         else:
-                            logging.warning("adb reverse falhou (%s): %s", s, txt.strip())
+                            logging.warning("adb reverse falhou (%s %s): %s", s_, porta, txt.strip())
                 estado.adb = f"{len(aparelhos)} tablet(s) por USB" if aparelhos else "nenhum tablet por USB (ative a depuracao USB)"
         except Exception as e:  # noqa: BLE001
+            falhas += 1
             logging.exception("erro no adb")
             estado.adb = f"erro no adb: {e}"
+            if falhas >= 2 and servidor_adb:     # adb travado (acontece depois de desligar o cabo): reinicia o servidor dele
+                try:
+                    subprocess.run([servidor_adb, "kill-server"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=15,
+                                   creationflags=CREATE_NO_WINDOW if os.name == "nt" else 0)
+                except Exception:  # noqa: BLE001
+                    pass
+                servidor_adb, ja, falhas = None, set(), 0
         estado.forcar_adb.wait(3.0)
         estado.forcar_adb.clear()
 

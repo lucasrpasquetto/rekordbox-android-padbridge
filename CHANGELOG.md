@@ -1,6 +1,7 @@
 # Changelog
 
 ## Nao lancado
+- Reconexao USB: o `adb reverse` agora e refeito por aparelho e por porta (inclui a porta extra do v2), o `adb devices` e registrado no log quando muda, e um adb travado depois de desligar o cabo e reiniciado (`kill-server`).
 - Botao **MODO** (mute/solo dos stems) na linha de stems de cada deck: funcao global `ActivePartMuteSolo` (nota 0x56, canal 0, retorno em 12); os dois decks mostram o mesmo estado. Requer reimportar o mapeamento.
 - A tela aceita, quando embutida em outra pagina, o tempo dos hot cues dentro dos pads (`window.__padsCues`); no PadBridge puro nada muda.
 - Estudo de dados em tempo real (`docs/TEMPO_REAL.md`) e sonda `tools/sonda_prolink.py` para testar o PRO DJ LINK (somente leitura).
