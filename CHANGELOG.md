@@ -1,6 +1,7 @@
 # Changelog
 
 ## Nao lancado
+- Mapeamento: **Needle Search** (`NeedleSearch`, 14 bits: CC 3 = MSB e CC 35 = LSB, canal 0/1 = deck 1/2, mais o toque na nota 0x43) para o PadBridge v2 mover a musica ao arrastar o dedo na waveform. Requer reimportar o mapeamento.
 - Reconexao USB: o `adb reverse` agora e refeito por aparelho e por porta (inclui a porta extra do v2), o `adb devices` e registrado no log quando muda, e um adb travado depois de desligar o cabo e reiniciado (`kill-server`).
 - Botao **MODO** (mute/solo dos stems) na linha de stems de cada deck: funcao global `ActivePartMuteSolo` (nota 0x56, canal 0, retorno em 12); os dois decks mostram o mesmo estado. Requer reimportar o mapeamento.
 - A tela aceita, quando embutida em outra pagina, o tempo dos hot cues dentro dos pads (`window.__padsCues`); no PadBridge puro nada muda.

@@ -32,9 +32,9 @@ FB_STEMS = ("12", "13")   # retorno de estado dos stems
 FB_PADS = FB_STEMS        # retorno dos pads (hot cue gravado, loop ativo, slot carregado); notas diferentes das dos stems, e nenhuma entrada usa esses canais
 
 
-def linha(nome, funcao, tipo, entrada, decks, comentario, saida=("", "", "")):
+def linha(nome, funcao, tipo, entrada, decks, comentario, saida=("", "", ""), opcao="Fast"):
     """Uma linha do CSV de mapeamento do Rekordbox (15 colunas)."""
-    return [nome, funcao, tipo, entrada, decks[0], decks[1], "", "", saida[0], saida[1], saida[2], "", "", "Fast", comentario]
+    return [nome, funcao, tipo, entrada, decks[0], decks[1], "", "", saida[0], saida[1], saida[2], "", "", opcao, comentario]
 
 
 def secao(titulo):
@@ -137,6 +137,11 @@ def gerar():
     # CFX ON e global (vale para os dois decks): sem coluna de deck, o canal vai dentro do codigo; o estado volta em 12 (nota 0x55)
     rows.append(linha("CFXOn", "", "Button", "9055", ("", ""), "Color FX liga/desliga (global)", saida=("9C55", "", "")))
     perf.append(dict(rot="CFX ON", nota=0x55, estado=True, topo=False, aria="Color FX ligado/desligado", **{"global": True}))
+
+    # ---- SEEK: arrastar o dedo na waveform do PadBridge v2 move a musica (Needle Search, 14 bits: CC 3 = MSB, CC 35 = LSB) ----
+    rows.append(secao("Seek (PadBridge v2): Needle Search"))
+    rows.append(linha("NeedleSearch", "NeedleSearch+Touch", "Button", "9043", DECK, "Needle Search: toque (00/7f)", opcao=""))
+    rows.append(linha("NeedleSearch", "NeedleSearch", "Value", "B003", DECK, "Needle Search: posicao (14 bits)", opcao="Max=16383"))
 
     return rows, MODOS, stems, ctrl, perf
 

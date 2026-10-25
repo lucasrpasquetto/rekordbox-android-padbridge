@@ -87,3 +87,6 @@ Slip,,Button,9052,0,1,,,9052,12,13,,,Fast,Slip mode liga/desliga
 Master,,Button,9053,0,1,,,9053,12,13,,,Fast,Deck master
 InstDoubles,,Button,9054,0,1,,,,,,,,Fast,Instant Doubles: copia a faixa do outro deck
 CFXOn,,Button,9055,,,,,9C55,,,,,Fast,Color FX liga/desliga (global)
+# Seek (PadBridge v2): Needle Search,,,,,,,,,,,,,,
+NeedleSearch,NeedleSearch+Touch,Button,9043,0,1,,,,,,,,,Needle Search: toque (00/7f)
+NeedleSearch,NeedleSearch,Value,B003,0,1,,,,,,,,Max=16383,Needle Search: posicao (14 bits)
