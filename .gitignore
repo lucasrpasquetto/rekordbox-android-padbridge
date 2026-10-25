@@ -13,3 +13,4 @@ padbridge_config.json
 !mapping/PadBridge.midi.csv
 comandos.txt
 experimentos/
+*.log.*
